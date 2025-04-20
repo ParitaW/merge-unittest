@@ -1,40 +1,58 @@
-export function merge(collection1: number[], collection2: number[], collection3: number[]): number[] {
-    const result: number[] = [];
+export function merge(
+  collection1: number[],
+  collection2: number[],
+  collection3: number[]
+): number[] {
+  const result: number[] = [];
 
-    // reversed collection3 to min->max
-    const reversedCollection3 = [...collection3].reverse();
+  // reversed collection3 to min->max
+  //   const reversedCollection3 = [...collection3].reverse();
 
-    let i = 0;
-    let j = 0;
-    let k = 0;
+  let i = 0; // min -> max
+  let j = collection2.length - 1; // max -> min
+  let k = 0; // min -> max
 
-    while (i < collection1.length && j < collection2.length && k < reversedCollection3.length) {
-        if (collection1[i] <= collection2[j] && collection1[i] <= reversedCollection3[k]) {
-            result.push(collection1[i]);
-            i++;
-        } else if (collection2[j] <= reversedCollection3[k]) {
-            result.push(collection2[j]);
-            j++;
-        } else {
-            result.push(reversedCollection3[k]);
-            k++;
-        }
+  // merge the 1 and 2 collections
+  while (i < collection1.length && j >= 0) {
+    if (collection1[i] <= collection2[j]) {
+      result.push(collection1[i]);
+      i++;
+    } else {
+      result.push(collection2[j]);
+      j--;
     }
+  }
 
-    while (i < collection1.length) {
-        result.push(collection1[i]);
-        i++;
+  // merge remaining elements of collection1 and collection2
+  while (i < collection1.length) {
+    result.push(collection1[i++]);
+  }
+  while (j >= 0) {
+    result.push(collection2[j--]);
+  }
+
+  // merge with collections 3
+  let temp = result;
+  let m = 0;
+  let n = 0;
+  const finalResult: number[] = [];
+  while (m < temp.length && n < collection3.length) {
+    if (temp[m] <= collection3[n]) {
+      finalResult.push(temp[m]);
+      m++;
+    } else {
+      finalResult.push(collection3[n]);
+      n++;
     }
+  }
 
-    while (j < collection2.length) {
-        result.push(collection2[j]);
-        j++;
-    }
+  // merge remaining elements of temp and collection3
+  while (m < temp.length) {
+    finalResult.push(temp[m++]);
+  }
+  while (n < collection3.length) {
+    finalResult.push(collection3[n++]);
+  }
 
-    while (k < reversedCollection3.length) {
-        result.push(reversedCollection3[k]);
-        k++;
-    }
-
-    return result;
+  return finalResult;
 }
